@@ -1,9 +1,8 @@
 ## About
 Fine-tuning large language models for Kaggle competition, LLM - Detect AI Generated Text
 
-## Features
 * Distributed data parallel training on single node, multi-GPU
-## Models
+Models
 * BERT
 ## Usage
 
