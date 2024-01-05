@@ -1,0 +1,9 @@
+__pycache__
+checkpoints
+transformers
+datasets
+external_dataset
+.ipynb_checkpoints
+output
+*wandb
+*.ipynb_checkpoints
