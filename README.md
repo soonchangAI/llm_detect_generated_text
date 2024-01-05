@@ -6,4 +6,4 @@ Fine-tuning large language models for Kaggle competition, LLM - Detect AI Genera
 ## Models
 * BERT
 ## Reference:
-* Code partially adapted from [PyTorch Examples](https://github.com/pytorch/examples/tree/main/distributed/ddp-tutorial-series)
+* Code partially adapted from [PyTorch Examples](https://github.com/pytorch/examples/tree/main/distributed/ddp-tutorial-series) and [Hugging Face NLP course](https://huggingface.co/learn/nlp-course/chapter1/1)
