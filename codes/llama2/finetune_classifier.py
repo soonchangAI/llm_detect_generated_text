@@ -13,6 +13,7 @@ import torch
 DEBUG = False
 MAX_LENGTH = 256
 
+# Adapted from https://github.com/haotian-liu/LLaVA/blob/main/llava/train/train.py``
 @dataclass
 class DataCollatorForSupervisedDataset(object):
     """Collate examples for supervised fine-tuning."""
@@ -26,10 +27,8 @@ class DataCollatorForSupervisedDataset(object):
             input_ids,
             batch_first=True,
             padding_value=self.tokenizer.pad_token_id)
-        # labels = torch.nn.utils.rnn.pad_sequence(labels,
-        #                                          batch_first=True,
-        #                                          padding_value=IGNORE_INDEX)
-        input_ids = input_ids[:, :MAX_LENGTH] #self.tokenizer.model_max_length] 
+
+        input_ids = input_ids[:, :MAX_LENGTH] 
         labels = torch.tensor(labels)
         batch = dict(
             input_ids=input_ids,
@@ -40,6 +39,7 @@ class DataCollatorForSupervisedDataset(object):
         return batch
         
 def load_train_objs():
+    """Load model and dataset for supervised fine-tuning."""
     num_labels = 2
     df = pd.read_csv('/media/cybertron/fa54fcb6-b5e1-492e-978a-6389519c168a/llm_detect_generated_text/external_dataset/daigt-v2-train-dataset/train_v2_drcat_02.csv')
     model_checkpoint = 'meta-llama/Llama-2-7b-hf'
@@ -64,16 +64,16 @@ def load_train_objs():
 
 
     def preprocess_function(examples):
-        return tokenizer(examples['text'], #max_length=256,truncation=True) #$, padding=True, truncation=True
+        return tokenizer(examples['text'], 
             return_tensors="pt",
             padding='longest',
             max_length=MAX_LENGTH,
             truncation=True)
-        #return tokenizer(examples['text'], max_length=256, padding=True, truncation=True)
+
 
     tokenized_datasets = dataset.map(preprocess_function,batched=True)
-    print(tokenized_datasets)
-    print(tokenized_datasets[0])
+    # print(tokenized_datasets)
+    # print(tokenized_datasets[0])
     tokenized_datasets = tokenized_datasets.remove_columns(['text', 'prompt_name', 'source', 'RDizzl3_seven'])
     tokenized_datasets = tokenized_datasets.rename_column("label","labels")
     tokenized_datasets.set_format("torch")
@@ -100,7 +100,8 @@ def load_train_objs():
 
 save_path = '/media/cybertron/fa54fcb6-b5e1-492e-978a-6389519c168a/llm_detect_generated_text/output/llama2-finetuned'
 train_dataloader, eval_dataloader, model, tokenizer, optimizer = load_train_objs()
-#del eval_dataloader
+
+# check a batch of input
 for batch in train_dataloader:
     print(batch)
     print('Batch items :')
@@ -110,6 +111,7 @@ for batch in train_dataloader:
 if DEBUG:
     pass 
 else:
+    # disable gradient calculation except for final layer 'score.weight'
     for k,v in model.named_parameters():
         if k == 'score.weight':
             v.requires_grad = True
@@ -126,6 +128,7 @@ else:
             loss.backward()
             optimizer.step()
             count += 1
+            # Calculate val loss
             if count %500 == 0:
                 total_val_loss = 0
                 with torch.no_grad():
@@ -138,5 +141,6 @@ else:
                 model.save_pretrained(save_path)
                 tokenizer.save_pretrained(save_path)
 
+# Save finetuned model
 model.save_pretrained(save_path)
 tokenizer.save_pretrained(save_path)

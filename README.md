@@ -5,6 +5,7 @@ Fine-tuning large language models for Kaggle competition, LLM - Detect AI Genera
 * Models
   * BERT: Single & multi-GPU data parallel
   * Llama-2-7b: multi-GPU model parallel
+    
 ## Usage
 
 1. BERT
@@ -18,6 +19,7 @@ torchrun --standalone --nproc_per_node=gpu codes/bert/multigpu.py $num_epochs $s
 ```
 
 2. LLAMA 2
+* Train only the final layer weight because I only have access to Titan X
 ```
 python codes/llama2/finetune_classifier.py
 ```
