@@ -9,3 +9,5 @@ output
 *.ipynb_checkpoints
 phi-1.5
 phi-2
+transformers_shortcut
+cmd.sh
