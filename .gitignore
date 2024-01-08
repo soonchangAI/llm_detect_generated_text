@@ -7,3 +7,5 @@ external_dataset
 output
 *wandb
 *.ipynb_checkpoints
+phi-1.5
+phi-2
